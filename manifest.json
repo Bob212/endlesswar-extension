@@ -1,6 +1,6 @@
 {
-  "name": "Carnage extension",
-  "version": "0.1",
+  "name": "EndlessWar extension",
+  "version": "1",
   "description": "Build an Extension!",
   "manifest_version": 2,
   // "page_action": {

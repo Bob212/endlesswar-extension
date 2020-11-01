@@ -18,7 +18,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     url: chrome.runtime.getURL("popup.html"),
     type: "popup",
     width: 300,
-    height: 700,
+    height: 900,
     left: screen.width,
   });
 });
