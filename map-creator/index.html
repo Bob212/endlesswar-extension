@@ -1,0 +1,2430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  #map {
+    width: 570px;
+    height: 597px;
+    /*width: 165px;*/
+    /*height: 165px;*/
+    overflow: hidden;
+
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+    display: inline-block;
+    position: relative;
+
+    transition: .3s;
+  }
+
+  #map img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  #map .map__inner {
+    display: block;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    width: 570px;
+    height: 597px;
+    position: absolute;
+    /*top: -3px;*/
+    top: 0;
+    left: 0;
+
+    transition: .3s;
+  }
+
+  .map-block, .personage, .info-block, .route-block {
+    width: 14px;
+    height: 14px;
+
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+
+  .map-block {
+    background: #ab9971;
+    display: inline-block;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 0;
+    line-height: 0;
+  }
+
+  .road {
+    background: #d1bf97;
+  }
+
+  .portal {
+    background: #d1bf97 url('./icons/portal.jpg') center center no-repeat;
+  }
+
+  .key {
+    background: #d1bf97 url('./icons/key.jpg') center center no-repeat;
+  }
+
+  .chest {
+    background: #d1bf97 url('./icons/chest.jpg') center center no-repeat;
+  }
+
+  .heal {
+    background: #d1bf97 url('./icons/heal.jpg') center center no-repeat;
+  }
+
+  .door {
+    background: #d1bf97 url('./icons/door.jpg') center center no-repeat;
+  }
+
+  .door-opened {
+    background: #d1bf97;
+    position: relative;
+  }
+
+  .door-opened::after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: #607d8b;
+  }
+
+  .personage {
+    background: red;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    color: #000;
+    font-size: 20px;
+    line-height: 8px;
+
+    transition: .2s;
+  }
+
+  .info-block {
+    background: #ffff0078;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    font-size: 8px;
+    line-height: 8px;
+  }
+
+  .route-block {
+    background: #ff252580;
+    position: absolute;
+  }
+
+  .controllers {
+    display: inline-block;
+  }
+
+  .controllers .row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+</style>
+<body>
+  <div class="where-to-put"></div>
+<script>
+
+// const body  = frames[1].document.querySelector('body');
+// const link  = document.createElement('style');
+// link.innerHTML = ``;
+// body.appendChild(link);
+
+const renderHTML = `
+<div id="map">
+  <!-- <img src="./gribnica.jpg" alt=""> -->
+  <div class="map__inner"></div>
+</div>
+
+<div class="controllers">
+  <div class="inner">
+    <div class="row">
+      <button id="button-up">up</button>
+    </div>
+
+    <div class="row">
+      <button id="button-left">left</button>
+      <button id="button-right">right</button>
+    </div>
+    
+    <div class="row">
+      <button id="button-reverse">reverse</button>
+    </div>
+
+    <br><br>
+    <div class="row">
+      <button id="button-minify">Minify / Maximify</button>
+    </div>
+  </div>
+</div>`;
+
+const mainNode = document.querySelector('.where-to-put');
+// const mainNode = frames[1].document.querySelector('.main-table');
+mainNode.innerHTML = renderHTML;
+
+const mapArray = [
+  [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    "$",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "$",
+    ".",
+    "$",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "%",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "%",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "$",
+    ".",
+    ".",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "^",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "|",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "|",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "|",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "^",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "|",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "|",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "$",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "|",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "|",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    "%",
+    "#",
+    "%",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "$",
+    ".",
+    ".",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "%",
+    "#",
+    "#",
+    "#",
+    "%",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "%",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "|",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "|",
+    ".",
+    "|",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    "^",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "$",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "|",
+    "#",
+    ".",
+    "#",
+    "|",
+    "#",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "%",
+    "#",
+    ".",
+    "#",
+    "#",
+    "%",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    "%",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "|",
+    "#",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "|",
+    "#",
+    "#",
+    "#",
+    ".",
+    "$",
+    ".",
+    "#",
+    "#",
+    "$",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    "@",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "$",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    "@",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "$",
+    ".",
+    "|",
+    ".",
+    "$",
+    "#",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "^",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "$",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "@",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "|",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    "%",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "$",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "%",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "$",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    "|",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "%",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "$",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    "#",
+    "#",
+    ".",
+    "#",
+    "^",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "#",
+    "@",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    ".",
+    "#",
+    "%",
+    ".",
+    "|",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    ".",
+    "|",
+    ".",
+    ".",
+    "#",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    ".",
+    ".",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "#",
+    "."
+  ],
+  [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "."
+  ]
+]
+
+let minifyMap = false;
+
+const oneBlockWidth = 15;
+
+const strategy = [
+  {
+    whereIAm: { y: 38, x: 8, direction: 0 },
+    coords: { y: 36, x: 8 },
+    action: 'usePortal',
+    // <object>
+    //     <position x="10" y="37" />
+    //     <id value="sub222349782" />
+    //     <type value="obj_teleport" />
+    // </object>
+  },
+  {
+    whereIAm: { y: 31, x: 1, direction: 2 },
+    coords: { y: 30, x: 13 },
+    action: 'openChest',
+    // <object>
+    //     <position x="14" y="32" />
+    //     <id value="sub249151140" />
+    //     <type value="obj_chest" />
+    // </object>
+  },
+
+  {
+    coords: { y: 32, x: 16 },
+    action: 'openTheDoor', // { y: 8, x: 19 }
+    // <object>
+    //     <position x="16" y="33" />
+    //     <id value="sub244198855" />
+    //     <type value="obj_switch" />
+    //     <!-- или мб obj_switched -->
+    // </object>
+  },
+
+  {
+    coords: { y: 28, x: 15 },
+    action: 'usePortal',
+  },
+
+  {
+    whereIAm: { y: 9, x: 12, direction: 3 },
+    coords: { y: 3, x: 16 },
+    action: 'useHeal',
+  },
+
+  {
+    coords: { y: 1, x: 13 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 2, x: 16 },
+    action: 'openTheDoor', // ????????????
+  },
+
+  {
+    coords: { y: 2, x: 18 },
+    action: 'openTheDoor', // ????????????
+  },
+
+  {
+    coords: { y: 10, x: 26 },
+    action: 'openTheDoor', // { y: 7, x: 28 }
+  },
+
+  {
+    coords: { y: 7, x: 35 },
+    action: 'useHeal',
+  },
+
+  {
+    coords: { y: 3, x: 32 },
+    action: 'openTheDoor', // { y: 11, x: 29 }, { y: 11, x: 35 }
+  },
+
+  {
+    coords: { y: 11, x: 32 },
+    action: 'openTheDoor', // { y: 3, x: 29 }, { y: 3, x: 35 }
+  },
+  // TODO обыскать 4 сундука
+
+  {
+    coords: { y: 3, x: 18 },
+    action: 'useHeal',
+  },
+
+  {
+    coords: { y: 16, x: 19 },
+    action: 'openTheDoor', // ??????
+  },
+
+  {
+    coords: { y: 15, x: 22 },
+    action: 'useHeal',
+  },
+
+  // { y: 15, x: 4 } - is opened, { y: 15, x: 2 } - opened
+
+  {
+    coords: { y: 17, x: 5 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 26, x: 25 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 21, x: 27 },
+    action: 'openTheDoor', // ??????
+  },
+
+  {
+    coords: { y: 25, x: 14 },
+    action: 'openTheDoor', // ??????
+  },
+
+  // { y: 8, x: 9 } - is opened, { y: 19, x: 27 } - is opened
+
+  {
+    coords: { y: 19, x: 35 },
+    action: 'openTheDoor', // { y: 18, x: 32 }  },
+  },
+
+  {
+    coords: { y: 18, x: 32 },
+    action: 'openTheDoor', // { y: 23, x: 32 }  },
+  },
+
+  {
+    coords: { y: 23, x: 35 },
+    action: 'openTheDoor', // { y: 16, x: 30 }  },
+  },
+
+  {
+    coords: { y: 23, x: 29 },
+    action: 'openTheDoor', // { y: 16, x: 34 }  },
+  },
+
+  // TODO: обыскать два сундука
+
+  {
+    coords: { y: 3, x: 18 },
+    action: 'useHeal',
+  },
+
+  {
+    coords: { y: 2, x: 1 },
+    action: 'openTheDoor', // { y: 28, x: 25 }  },
+  },
+
+  {
+    coords: { y: 17, x: 2 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 15, x: 22 },
+    action: 'useHeal',
+  },
+
+  {
+    coords: { y: 33, x: 10 },
+    action: 'openTheDoor', // { y: 33, x: 20 }, { y: 37, x: 22 }, { y: 36, x: 25 } 
+  },
+
+  {
+    coords: { y: 36, x: 22 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 34, x: 22 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 32, x: 22 },
+    action: 'openChest',
+  },
+
+  {
+    coords: { y: 34, x: 30 },
+    action: 'openTheDoor',
+  },
+];
+
+const myPosition = {
+  direction: 0,
+  y: 13,
+  x: 16,
+};
+
+const possibleDirections = [
+  '←',
+  '↓',
+  '→',
+  '↑'
+];
+
+let way = '';
+
+const mapMatchers = [
+  { symbol: '#', className: 'road' },
+  { symbol: '@', className: 'portal' },
+  { symbol: '$', className: 'key' },
+  { symbol: '%', className: 'chest' },
+  { symbol: '^', className: 'heal' },
+  { symbol: '|', className: 'door' },
+  { symbol: '*', className: 'door-opened' },
+];
+
+const mapWrapperNode = mainNode.querySelector('#map');
+const nodeMap = mapWrapperNode.querySelector(".map__inner");
+const controllersNode = mainNode.querySelector('.controllers');
+
+const changeSomethingOnmap = (coords, symbol) => {
+  mapArray[coords.y][coords.x] = symbol;
+
+  return mapArray
+};
+
+const handlerClickOnMap = (element) => {
+
+  // console.log(element.target);
+  // nodeMap.innerHTML = '';
+
+  const row = element.target.getAttribute('data-row');
+  const col = element.target.getAttribute('data-col');
+
+  console.log('Row: ', row);
+  console.log('Col: ', col);
+
+  // Func for drawing START
+
+  // changeSomethingOnmap({x: col, y: row}, '#')
+  // renderArray()
+  // return
+
+  // Func for drawing END
+
+  // Open the door
+  if (mapArray[row][col] === '|') {
+    mapArray[row][col] = '*';
+    renderArray();
+    return;
+  }
+
+  // Close the door
+  if (mapArray[row][col] === '*') {
+    mapArray[row][col] = '|';
+    
+    renderArray();
+    return;
+  }
+
+  if (element.ctrlKey) {
+    // Put the personage on this coords
+    myPosition.x = +col;
+    myPosition.y = +row;
+    renderPersonage();
+  } else {
+    // Render route to this coords
+    way = findRouteToTarget({ y: +row, x: +col }, myPosition);
+    console.log(way)
+  }
+
+  console.log('')
+
+  // if (!row || !col) return;
+
+  // mapArray[row][col] = mapArray[row][col] === '#' ? '|' : '.';
+
+  // renderArray()
+}; 
+
+const chasingToPers = () => {
+  if (!minifyMap) {
+    nodeMap.style.top = null;
+    nodeMap.style.left = null;
+    return
+  }
+
+  nodeMap.style.top = `-${oneBlockWidth * (myPosition.y - 5)}px`;
+  nodeMap.style.left = `-${oneBlockWidth * (myPosition.x - 5)}px`;
+};
+
+const setMapSize = () => {
+  if (!minifyMap) {
+    mapWrapperNode.style.width = null;
+    mapWrapperNode.style.height = null;
+  } else {
+    mapWrapperNode.style.width = '165px';
+    mapWrapperNode.style.height = '165px';
+  }
+};
+
+const renderArray = () => {
+  // Clear previous state
+  nodeMap.innerHTML = '';
+
+  mapArray.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => {
+      const div = document.createElement('div');
+      // div.innerText = '';
+      div.classList.add('map-block');
+
+      const whatTypeOfSymbol = mapMatchers.find(el => el.symbol === col);
+
+      if (whatTypeOfSymbol) {
+        div.classList.add(whatTypeOfSymbol.className);
+      }
+
+      div.setAttribute('data-row', rowIndex)
+      div.setAttribute('data-col', colIndex)
+
+      div.addEventListener('click', handlerClickOnMap);
+
+      nodeMap.appendChild(div);
+    })
+  });
+
+  renderInfoBlocks();
+
+  renderPersonage();
+};
+
+const renderPersonage = () => {
+  // if rerender
+  let persNode = nodeMap.querySelector('.personage');
+  const isRerender = persNode ? true : false;
+
+  if (!isRerender) {
+    persNode = document.createElement('div');
+    persNode.classList.add('personage');
+  }
+
+  persNode.innerText = possibleDirections[myPosition.direction];
+  persNode.style.left = `${oneBlockWidth*myPosition.x}px`
+  persNode.style.top = `${oneBlockWidth*myPosition.y}px`
+
+  if (!isRerender) {
+    nodeMap.appendChild(persNode);
+  }
+
+  chasingToPers()
+};
+
+const renderInfoBlocks = () => {
+  strategy.forEach(step => {
+    const div = document.createElement('div');
+    div.classList.add('info-block');
+
+    const x = step.coords.x;
+    const y = step.coords.y;
+
+    div.innerHTML = `${y}<br>${x}`;
+    div.style.left = `${x * oneBlockWidth}px`;
+    div.style.top = `${y * oneBlockWidth}px`;
+
+    div.setAttribute('data-row', y)
+    div.setAttribute('data-col', x)
+
+    div.addEventListener('click', handlerClickOnMap);
+
+    nodeMap.appendChild(div);
+  });
+};
+
+renderArray();
+
+const handleLeft = () => {
+  let persDirection = myPosition.direction;
+
+  if (persDirection === 3) {
+    persDirection = 0;
+  } else {
+    persDirection++;
+  }
+
+  myPosition.direction = persDirection;
+
+  renderPersonage();
+};
+controllersNode.querySelector('#button-left').addEventListener('click', handleLeft);
+
+const handleRight = () => {
+  let persDirection = myPosition.direction;
+
+  if (persDirection === 0) {
+    persDirection = 3;
+  } else {
+    persDirection--;
+  }
+
+  myPosition.direction = persDirection;
+
+  renderPersonage();
+};
+controllersNode.querySelector('#button-right').addEventListener('click', handleRight);
+
+const handleReverse = () => {
+  handleRight();
+  handleRight();
+};
+controllersNode.querySelector('#button-reverse').addEventListener('click', handleReverse);
+
+const handleUp = () => {
+  let possibleX = myPosition.x;
+  let possibleY = myPosition.y;
+
+  switch(myPosition.direction) {
+    case 0:
+      possibleX--;
+      break;
+    case 1:
+      possibleY++;
+      break;
+    case 2:
+      possibleX++;
+      break;
+    case 3:
+      possibleY--;
+      break;
+  }
+
+  if (mapArray[possibleY][possibleX] !== '#' && mapArray[possibleY][possibleX] !== '*') return;
+
+  myPosition.x = possibleX;
+  myPosition.y = possibleY;
+
+  renderPersonage();
+};
+controllersNode.querySelector('#button-up').addEventListener('click', handleUp);
+
+const handleMinify = () => {
+  minifyMap = !minifyMap;
+
+  renderPersonage();
+  setMapSize();
+}
+controllersNode.querySelector('#button-minify').addEventListener('click', handleMinify);
+
+const clearRouteInDOM = () => {
+  [...nodeMap.querySelectorAll('.route-block')].forEach(el => el.remove());
+};
+
+const findRouteToTarget = (neededTarget, currentPosition) => {
+  const currPosition = { ...currentPosition };
+
+  const route = generateRouteArray(neededTarget, currPosition);
+
+  if (route) {
+    route.push(neededTarget)
+    route.shift()
+  }
+
+  clearRouteInDOM();
+
+  // Cant find the way
+  if (!route) return
+
+  route.forEach(el => {
+    const nodeElem = document.createElement('div');
+    nodeElem.classList.add('route-block');
+
+    nodeElem.style.left = `${oneBlockWidth*el.x}px`
+    nodeElem.style.top = `${oneBlockWidth*el.y}px`
+
+    nodeElem.setAttribute('data-row', el.y)
+    nodeElem.setAttribute('data-col', el.x)
+
+    nodeElem.addEventListener('click', handlerClickOnMap);
+
+    nodeMap.appendChild(nodeElem);
+  })
+
+  return howShouldIMove(route);
+};
+
+const isBlank = (position, already_was) => {
+  const wasHereBefore = already_was.find(el => el.x === position.x && el.y === position.y)
+  if (
+      (mapArray[position.y][position.x] !== '#' && mapArray[position.y][position.x] !== '*') ||
+      wasHereBefore
+    ) return true
+
+  return false;
+};
+
+const generateRouteArray = (neededTarget, currentPosition, already_was = []) => {
+  if (
+      neededTarget.x === currentPosition.x &&
+      neededTarget.y === currentPosition.y
+    ) return already_was;
+
+  let k = 0;
+
+  if ( isBlank( { y: currentPosition.y + 1, x: currentPosition.x }, already_was) ) k++;
+  if ( isBlank( { y: currentPosition.y - 1, x: currentPosition.x }, already_was) ) k++;
+  if ( isBlank( { y: currentPosition.y, x: currentPosition.x + 1 }, already_was) ) k++;
+  if ( isBlank( { y: currentPosition.y, x: currentPosition.x - 1 }, already_was) ) k++;
+
+  if (k === 4) return false;
+
+  already_was.push({ x: currentPosition.x, y: currentPosition.y });
+
+  let resFromUp = null;
+  let resFromDown = null;
+  let resFromRight = null;
+  let resFromLeft = null;
+
+  if ( !isBlank( { y: currentPosition.y + 1, x: currentPosition.x }, already_was) ) {
+    resFromUp = generateRouteArray(neededTarget, { y: currentPosition.y + 1, x: currentPosition.x}, [...already_was]);
+  }
+  if ( !isBlank( { y: currentPosition.y - 1, x: currentPosition.x }, already_was) ) {
+    resFromDown = generateRouteArray(neededTarget, { y: currentPosition.y - 1, x: currentPosition.x}, [...already_was]);
+  }
+
+  if ( !isBlank( { y: currentPosition.y, x: currentPosition.x + 1 }, already_was) ) {
+    resFromRight = generateRouteArray(neededTarget, { y: currentPosition.y, x: currentPosition.x + 1}, [...already_was]);
+  }
+  if ( !isBlank( { y: currentPosition.y, x: currentPosition.x - 1 }, already_was) ) {
+    resFromLeft = generateRouteArray(neededTarget, { y: currentPosition.y, x: currentPosition.x - 1}, [...already_was]);
+  }
+
+  // Finding the smallest possible way
+  let smallestArray = new Array(999);
+
+  if (resFromUp && resFromUp.length < smallestArray.length) smallestArray = resFromUp;
+  if (resFromDown && resFromDown.length < smallestArray.length) smallestArray = resFromDown;
+  if (resFromRight && resFromRight.length < smallestArray.length) smallestArray = resFromRight;
+  if (resFromLeft && resFromLeft.length < smallestArray.length) smallestArray = resFromLeft;
+
+  if (smallestArray.length < 999) return smallestArray;
+
+  // Cant find the way
+  return false
+};
+
+const howShouldIMove = (routeArray) => {
+  const clicks = [];
+  let currentPosition = { ...myPosition };
+
+  const possibleForward = (currentPosition) => {
+    let possibleX = currentPosition.x;
+    let possibleY = currentPosition.y;
+
+    switch(currentPosition.direction) {
+      case 0:
+        possibleX--;
+        break;
+      case 1:
+        possibleY++;
+        break;
+      case 2:
+        possibleX++;
+        break;
+      case 3:
+        possibleY--;
+        break;
+    }
+
+    return {x: possibleX, y: possibleY}
+  }
+
+  const comparePositions = (pos1, pos2) => {
+    return pos1.x === pos2.x && pos1.y === pos2.y
+  } 
+
+  routeArray.forEach(nextPosition => {
+    while (true) {
+      if ( comparePositions(possibleForward(currentPosition), nextPosition)  ) {
+        clicks.push('up');
+
+        currentPosition.x = nextPosition.x;
+        currentPosition.y = nextPosition.y;
+
+        break;
+      }
+
+      if (currentPosition.direction === 3) {
+        currentPosition.direction = 0;
+      } else {
+        currentPosition.direction += 1;
+      }
+
+      clicks.push('left');
+    }
+  })
+
+  // changing ['left', 'left', 'left'] to ['right']
+  let i = 0;
+  while(true) {
+    if (!clicks[i]) break;
+
+    if (clicks[i] === 'left' && clicks[i] === clicks[i + 1] && clicks[i] === clicks[i + 2]) {
+      clicks.splice(i, 3, 'right');
+      i = 0;
+    }
+
+    i++
+  }
+
+  return clicks;
+};
+
+const logKey = (e) => {
+  switch(e.code) {
+    case 'KeyW':
+      handleUp();
+      break;
+    case 'KeyA':
+      handleLeft();
+      break;
+    case 'KeyD':
+      handleRight();
+      break;
+    case 'KeyS':
+      handleReverse();
+      break;
+    case 'KeyF':
+      handleMinify();
+      break;
+  }
+}
+
+// frames[1].document.body.addEventListener('keyup', logKey);
+document.body.addEventListener('keyup', logKey);
+
+// chasingToPers();
+
+</script>
+</body>
+</html>

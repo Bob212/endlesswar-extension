@@ -1,0 +1,35 @@
+{
+  "name": "Carnage extension",
+  "version": "0.1",
+  "description": "Build an Extension!",
+  "manifest_version": 2,
+  // "page_action": {
+    // "default_popup": "popup.html",
+    // "default_icon": {
+    //   "48": "swords-48.png",
+    //   "128": "swords-128.png"
+    // }
+  // },
+  "browser_action": {},
+  "permissions": [
+    "declarativeContent",
+    "storage",
+    "activeTab",
+    "cookies",
+    "tabs",
+    "*://*.endlesswar.ru/"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["*://*.endlesswar.ru/*"],
+    "js": ["content.js"],
+    "run_at": "document_start"
+  }],
+  "icons": {
+    "48": "swords-48.png",
+    "128": "swords-128.png"
+  }
+}
