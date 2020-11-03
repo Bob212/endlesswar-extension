@@ -2,94 +2,24 @@ console.log('CRNG content');
 const myNickName = 'SICKO MODE';
 // const avatar_url = 'http://img.carnage.ru/i/obraz/0_IND0012M.jpg';
 let autofightCreateWait = false;
+let needToReloadWindow = false;
 
 // #################### HELPERS
 
-const getCookie = (name) => {
-  let matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-};
 
-function setCookie(name, value, options = {}) {
-
-  options = {
-    path: '/',
-    // при необходимости добавьте другие значения по умолчанию
-    ...options
-  };
-
-  if (options.expires instanceof Date) {
-    options.expires = options.expires.toUTCString();
-  }
-
-  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-
-  for (let optionKey in options) {
-    updatedCookie += "; " + optionKey;
-    let optionValue = options[optionKey];
-    if (optionValue !== true) {
-      updatedCookie += "=" + optionValue;
-    }
-  }
-
-  document.cookie = updatedCookie;
-}
-
-function deleteCookie(name) {
-  setCookie(name, "", {
-    'max-age': -1
-  })
-}
-
-const getIdentificator = () => {
-  let cookieName = 'identifND';
-
-  if (sessionStorage[cookieName]) {
-    return +sessionStorage[cookieName];
-  }
-
-  if (!frames[1].document.querySelector('input[name="nd"]')) {
-    frames[1].document.location.href = `https://avalon.endlesswar.ru/inventory.php?${Math.random()}`
-    console.log('Нужно зайти в инвентарь!');
-    return false;
-  }
-
-  let identificator = frames[1].document.querySelector('input[name="nd"]').value;
-
-  sessionStorage[cookieName] = `${identificator}`
-
-  return identificator
-};
-
-const currentHp = () => {
-  return +frames[0].document.querySelector('#dvhp').innerText;
-};
-
-const maxHp = () => {
-  return +frames[0].document.querySelector('#dvmaxhp').innerText;
-};
-
-const currentMana = () => {
-  return +frames[0].document.querySelector('#dvmana').innerText;
-};
-
-const maxMana = () => {
-  return +frames[0].document.querySelector('#dvmaxmana').innerText;
-};
-
+import { getCookie, setCookie, deleteCookie, getIdentificator, currentHp, maxHp, currentMana, maxMana } from './utils.js';
+import { reloadPage } from './helpers.js';
+import { spinDemiurgsWheel, clearChat } from './actions.js';
 
 
 // #################### MAIN functions
 
 const main_interval = setInterval(() => {
   autofight();
-
+// neuyazvimost3000 without sex sex sex 
   autoCreateFight();
 }, 1500);
 
-let needToReloadWindow = false;
 setTimeout(() => {
   needToReloadWindow = true;
 }, 60000 * 10) // 10 minutes
@@ -255,34 +185,6 @@ const clickOnRuna = (src) => {
 
 // AUTOFIGHT END ####################
 
-const spinDemiurgsWheel = async () => {
-  let identificator = getIdentificator();
-
-  if (!identificator) return;
-
-  console.log('Крутим колесо');
-
-  let rand = Math.random();
-
-  let response = await fetch(`https://avalon.endlesswar.ru/wheel.php?cmd=wheel.turn&nd=${identificator}&${rand}`, {
-    method: "GET",
-    referrer: "https://avalon.endlesswar.ru/lotery.php",
-  });
-
-  let responseInnerData = '';
-
-  if (response.ok) { // если HTTP-статус в диапазоне 200-299
-    responseInnerData = await response.text()
-  } else {
-    alert("Ошибка HTTP: " + response.status);
-  }
-
-  let tempDom = document.createElement('p');
-  tempDom.innerHTML = responseInnerData;
-
-  console.log('Result: ', tempDom.children[0].children[0].getAttribute('text'))
-};
-
 const shadowFight = () => {
   console.log('Fighting with Shadow!');
   frames[1].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?level=duel&duel_shadow=1`;
@@ -365,31 +267,6 @@ const hospitalCure = () => {
 
   console.log('Hospital Cure');
   frames[1].document.location.href = `https://avalon.endlesswar.ru/hospital.php?cmd=hospital.show&set=recovery&nd=${identificator}&${Math.random()}`
-};
-
-
-
-
-const reloadPage = () => {
-  if ( getCookie('ext-carnage-auto-reload-page') === 'false' ) return;
-
-  needToReloadWindow = false;
-
-  saveChatBeforeQuit();
-
-  const currentURL = window.location.href;
-
-  window.open(currentURL, '_blank');
-  window.close()
-};
-
-const clearChat = () => {
-  frames[2].frames[1].document.querySelector('#chat-channels').children[1].innerHTML = ``;
-  localStorage.avalonMessages = '';
-};
-
-const saveChatBeforeQuit = () => {
-  localStorage.avalonMessages = frames[2].frames[1].document.querySelector('#chat-channels').children[1].innerHTML;
 };
 
 // #################### COOKIE button setters | must be placed in the bottom

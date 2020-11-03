@@ -20,16 +20,16 @@
     "*://*.endlesswar.ru/"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["./src/background.js"],
     "persistent": false
   },
   "content_scripts": [{
     "matches": ["*://*.endlesswar.ru/*"],
-    "js": ["content.js"],
+    "js": ["./dist/content.js"],
     "run_at": "document_start"
   }],
   "icons": {
-    "48": "swords-48.png",
-    "128": "swords-128.png"
+    "48": "./images/swords-48.png",
+    "128": "./images/swords-128.png"
   }
 }
