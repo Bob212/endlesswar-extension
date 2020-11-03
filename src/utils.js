@@ -1,3 +1,13 @@
+import { spinDemiurgsWheel, shadowFight, haotFightCreate, hospitalCure, clearChat } from './actions.js';
+
+const cookieButtons = [
+  {cookieName: 'ext-carnage-spin-wheel', func: spinDemiurgsWheel},
+  {cookieName: 'ext-carnage-shadow-fight', func: shadowFight},
+  {cookieName: 'ext-carnage-haot-fight-create', func: haotFightCreate},
+  {cookieName: 'ext-carnage-hospital-cure', func: hospitalCure},
+  {cookieName: 'ext-carnage-clear-chat', func: clearChat},
+];
+
 export const getCookie = (name) => {
   let matches = document.cookie.match(new RegExp(
     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
@@ -36,6 +46,30 @@ export const deleteCookie = (name) => {
     'max-age': -1
   })
 }
+
+cookieButtons.forEach(el => {
+  deleteCookie(el.cookieName);
+});
+
+export const checkCookie = function() {
+    var lastCookie = document.cookie; // 'static' memory between function calls
+
+    return function() {
+        var currentCookie = document.cookie;
+
+        if (currentCookie != lastCookie) {
+            // something useful like parse cookie, run a callback fn, etc.
+            lastCookie = currentCookie; // store latest cookie
+
+            cookieButtons.forEach((el) => {
+              if (getCookie(el.cookieName) == 'true') {
+                el.func();
+                deleteCookie(el.cookieName);
+              }
+            });
+        }
+    };
+}();
 
 
 export const getIdentificator = () => {

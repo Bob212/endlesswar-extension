@@ -16,3 +16,12 @@ export const reloadPage = () => {
   window.open(currentURL, '_blank');
   window.close()
 };
+
+export const pasteChat = () => {
+  setTimeout(() => {
+    if (localStorage.avalonMessages && frames[2] && localStorage.avalonMessages) {
+      const chatContainer = frames[2].frames[1].document.querySelector('#chat-channels').children[1];
+      chatContainer.innerHTML = `${localStorage.avalonMessages}${chatContainer.innerHTML}`;
+    }
+  }, 5000);
+};
