@@ -5,10 +5,8 @@ let needToReloadWindow = false;
 
 // #################### HELPERS
 
-
-import { getCookie, setCookie, deleteCookie, checkCookie, getIdentificator, currentHp, maxHp, currentMana, maxMana } from './utils.js';
-import { reloadPage, pasteChat } from './helpers.js';
-import { spinDemiurgsWheel, clearChat, hospitalCure, shadowFight, haotFightCreate } from './actions.js';
+import { checkCookie } from './utils.js';
+import { pasteChat } from './helpers.js';
 
 import { autoCreateFight } from './actions/autoCreateFight.js';
 import { autofight } from './actions/autofight/index.js';
