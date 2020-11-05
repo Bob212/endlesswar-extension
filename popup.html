@@ -10,6 +10,11 @@
       margin: 16px 10px;
     }
 
+    .flex {
+      display: flex;
+      justify-content: space-between;
+    }
+
     button {
       display: flex;
       align-items: center;
@@ -58,25 +63,47 @@
     Autofight settings
   </div>
 
-  <p>
-    <input type="checkbox" id="autofight-check">
-    <label for="autofight-check">Autofight</label>
-  </p>
+  <div class="flex">
+    <div>
+      <p>
+        <input type="checkbox" id="autofight-check">
+        <label for="autofight-check">Autofight</label>
+      </p>
 
-  <p>
-    <label for="autofight-animals">Num of animals to use</label>
-    <input class="little-num" type="number" value="0" id="autofight-animals">
-  </p>
+      <p>
+        <label for="autofight-animals">Num of animals to use</label>
+        <input class="little-num" type="number" value="0" id="autofight-animals">
+      </p>
 
-  <p>
-    <label for="autofight-mana">Num of MANA to use</label>
-    <input class="little-num" type="number" value="0" id="autofight-mana">
-  </p>
+      <p>
+        <label for="autofight-mana">Num of MANA to use</label>
+        <input class="little-num" type="number" value="0" id="autofight-mana">
+      </p>
 
-  <p>
-    <label for="autofight-delay">Delay before start (seconds)</label>
-    <input class="little-num" type="number" value="0" id="autofight-delay">
-  </p>
+      <p>
+        <label for="autofight-delay">Delay before start (seconds)</label>
+        <input class="little-num" type="number" value="0" id="autofight-delay">
+      </p>
+    </div>
+    <div>
+      <p> &nbsp;</p>
+
+      <p>
+        <input type="checkbox" id="autofight-autoheal">
+        <label for="autofight-autoheal">Auto heal</label>
+      </p>
+
+      <p>
+        <label for="autofight-autoheal-num">Num of HEAL to use</label>
+        <input class="little-num" type="number" value="0" id="autofight-autoheal-num">
+      </p>
+
+      <p>
+        <label for="autofight-autoheal-min-hp">Use heal when hp lower than: </label>
+        <input class="little-num" type="number" value="0" id="autofight-autoheal-min-hp">
+      </p>
+    </div>
+  </div>
 
   <div class="alert alert-primary" role="alert">
     Auto creating fight:

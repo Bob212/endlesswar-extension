@@ -1,5 +1,5 @@
-import { getCookie } from '../../utils.js';
-import { reloadPage } from '../../helpers.js';
+import { getCookie, currentMana, currentHp } from '../../utils.js';
+import { reloadPage } from '../../helpers.js'; 
 
 let isFightJustStarted = false;
 let needToWaitInFight = false;
@@ -7,11 +7,23 @@ let beginningDelay = false;
 
 let callDragonsInFight = false; // TODO
 let needToUseMana = false; // TODO
+let needToUseHeal = false;
 
 const manaUses = {
-  current: 0,
-  max: 1,
+  // current: 0,
+  max: 0,
 };
+// now: manaUses.current === localStorage.inThisFightCurrentManaUses
+
+const healUses = {
+  current: 0,
+  max: 0,
+};
+
+const healRunes = [
+  'https://img.endlesswar.ru/i/rune/8.gif', // 250 x 2
+  'https://img.endlesswar.ru/i/rune/78.gif' // 250 x 5
+];
 
 export const autofight = (needToReloadWindow) => {
   const autofight_on = getCookie('ext-carnage-autofight') == 'true';
@@ -28,6 +40,8 @@ export const autofight = (needToReloadWindow) => {
 
     if (isFightJustStarted) {
       isFightJustStarted = false;
+      localStorage.inThisFightCurrentManaUses = 0;
+      localStorage.inThisFightCurrentHealUses = 0;
 
       callDragonsInFight = +getCookie('ext-carnage-autofight-animals');
       if (callDragonsInFight && callDragonsInFight > 0) {
@@ -49,6 +63,11 @@ export const autofight = (needToReloadWindow) => {
     if (needToUseMana && needToUseMana > 0) {
       manaUses.max = needToUseMana;
       if (useMana()) return;
+    }
+
+    needToUseHeal = getCookie('ext-carnage-autofight-autoheal');
+    if (needToUseHeal == 'true') {
+      if (useHeal()) return;
     }
 
     console.log('Hit an oppenent');
@@ -81,7 +100,9 @@ const exitTheFight = () => {
     frames[1].document.querySelector('.xbbutton').click();
 
     isFightJustStarted = true;
-    manaUses.current = 0;
+    // manaUses.current = 0;
+    localStorage.inThisFightCurrentManaUses = 0;
+    localStorage.inThisFightCurrentHealUses = 0;
   }
 };
 
@@ -103,7 +124,7 @@ const callDragonsForFight = (numOfCalls) => {
 };
 
 const useMana = () => {
-  if (manaUses.current >= manaUses.max) return false;
+  if (+localStorage.inThisFightCurrentManaUses >= manaUses.max) return false;
   const manaGap = 100;
 
   if (currentMana() + manaGap < maxMana()) {
@@ -111,7 +132,8 @@ const useMana = () => {
 
     clickOnRuna('https://img.endlesswar.ru/i/rune/37.gif');
 
-    manaUses.current += 1;
+    // manaUses.current += 1;
+    localStorage.inThisFightCurrentManaUses = +localStorage.inThisFightCurrentManaUses + 1;
 
     needToWaitInFight = true;
 
@@ -125,10 +147,46 @@ const useMana = () => {
   };
 };
 
-const clickOnRuna = (src) => {
-  runesNodes = [...frames[1].document.querySelectorAll('li[data-slot-name="rune"]')];
+const useHeal = () => {
+  healUses.max = +getCookie('ext-carnage-autoheal-num');
+  healUses.current = +localStorage.inThisFightCurrentHealUses;
 
-  runesNodes.find(node => {
+  if (healUses.current >= healUses.max) return false;
+
+  const hpWhenNeedToHeal = +getCookie('ext-carnage-autoheal-minhp');
+
+  if ( currentHp() > hpWhenNeedToHeal ) return false;
+
+  let foundHealRune = false;
+
+  healRunes.find(runeImg => {
+    if ( clickOnRuna(runeImg) ) {
+      foundHealRune = true;
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  if (foundHealRune) {
+    localStorage.inThisFightCurrentHealUses = +localStorage.inThisFightCurrentHealUses + 1;
+
+    needToWaitInFight = true;
+
+    setTimeout(() => {
+      needToWaitInFight = false;
+    }, 3000);
+
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const clickOnRuna = (src) => {
+  const runesNodes = [...frames[1].document.querySelectorAll('li[data-slot-name="rune"]')];
+
+  const finder = runesNodes.find(node => {
     const imgNode = node.querySelector('img');
 
     if (imgNode) {
@@ -146,4 +204,8 @@ const clickOnRuna = (src) => {
       }
     }
   });
+
+  if (finder) return true;
+
+  return false;
 };

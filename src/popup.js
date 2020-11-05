@@ -63,11 +63,14 @@ const cookieDomMatch = [
   { cookie: 'ext-carnage-autofight-mana', domElement: '#autofight-mana', isInput: true },
   { cookie: 'ext-carnage-autofight-delay', domElement: '#autofight-delay', isInput: true },
   { cookie: 'ext-carnage-mymaxhp', domElement: '#mymaxhp', isInput: true },
+  { cookie: 'ext-carnage-autoheal-num', domElement: '#autofight-autoheal-num', isInput: true },
+  { cookie: 'ext-carnage-autoheal-minhp', domElement: '#autofight-autoheal-min-hp', isInput: true },
 
   { cookie: 'ext-carnage-autofight', domElement: '#autofight-check' },
   { cookie: 'ext-carnage-auto-create-haot-fight', domElement: '#auto-create-fight-haot' },
   { cookie: 'ext-carnage-auto-reload-page', domElement: '#auto-reload-page' },
   { cookie: 'ext-carnage-auto-regeneration-in-hospital', domElement: '#auto-regeneration-in-hospital' },
+  { cookie: 'ext-carnage-autofight-autoheal', domElement: '#autofight-autoheal' },
   // { cookie: 'ext-carnage-autocreate-fight-with-shadow', domElement: "#auto-create-fight-with-bot" },
 ];
 
