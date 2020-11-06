@@ -38,6 +38,17 @@ export const autofight = (needToReloadWindow) => {
       return;
     }
 
+    const name1Node = frames[1].document.querySelector('.inv-view-col .nickname .name.side-1');
+    const name2Node = frames[1].document.querySelector('.inv-view-col .nickname .name.side-2');
+
+    if (
+        name1Node && name1Node.innerText === 'Злой Хряк' ||
+        name2Node && name2Node.innerText === 'Злой Хряк'
+      ) {
+      console.log('Хряк!');
+      return;
+    }
+
     if (isFightJustStarted) {
       isFightJustStarted = false;
       localStorage.inThisFightCurrentManaUses = 0;
