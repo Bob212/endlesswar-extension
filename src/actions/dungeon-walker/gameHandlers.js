@@ -44,5 +44,20 @@ export const handleReverseGame = async () => {
   return await handleMoveGame('B')
 };
 
+export const handlerAttackGame = async (enemyId) => {
+  const identificator = getIdentificator();
+  if ( !identificator ) return false;
 
-// https://avalon.endlesswar.ru/dungeon_xml.php?cmd=turnXML&direction=B&nd=1990302350&0.7850366216152906 - reverse
+  return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=attack&objectId=${enemyId}&nd=${identificator}&${Math.random()}&nd=${identificator}`)
+};
+
+export const handlerRefreshGame = async () => {
+  return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=updateXML&${Math.random()}`);
+};
+
+export const handlerHealGame = async (objId) => {
+  const identificator = getIdentificator();
+  if ( !identificator ) return false;
+
+  return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=restoreHPPW&objectId=${objId}&nd=${identificator}&${Math.random()}`)
+};

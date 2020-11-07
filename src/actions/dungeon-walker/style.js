@@ -39,7 +39,7 @@ export const style = `
     transition: .3s;
   }
 
-  .map-block, .personage, .info-block, .route-block {
+  .map-block, .personage, .info-block, .route-block, .enemy {
     width: 14px;
     height: 14px;
 
@@ -82,22 +82,22 @@ export const style = `
 
   .enemy {
     background: #d1bf97;
-    position: relative;
+    position: absolute;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .enemy::after {
     content: '';
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
+    display: inline-block;
 
     width: 70%;
     height: 70%;
     border-radius: 50%;
     background: red;
-
-    transform: translate(-50%, -50%);
   }
 
   .door-opened {

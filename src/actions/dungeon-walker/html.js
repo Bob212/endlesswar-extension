@@ -23,6 +23,11 @@ export const html = `
     <div class="row">
       <button id="button-minify">Minify / Maximify</button>
     </div>
+
+    <br><br>
+    <div class="row">
+      <button id="button-stop-automove">Stop Automove</button>
+    </div>
   </div>
 </div>
 `;
