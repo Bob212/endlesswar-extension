@@ -4,7 +4,18 @@ import { gribnicaMap } from './maps.js';
 import { gribnicaStrategy } from './strategy.js';
 
 import { handlePosPlugin } from './moveHandlers.js';
-import { handleUpGame, handleRightGame, handleLeftGame, handleReverseGame, handlerAttackGame, handlerRefreshGame, handlerHealGame } from './gameHandlers.js';
+import {
+  handleUpGame,
+  handleRightGame,
+  handleLeftGame,
+  handleReverseGame,
+  handlerAttackGame,
+  handlerRefreshGame,
+  handlerHealGame,
+  handlerOpenChestGame,
+  handlerOpenDoorGame,
+  handlerUseTeleportGame
+} from './gameHandlers.js';
 
 export const createDungeonMap = async () => {
   console.log('Map created!'); 
@@ -218,11 +229,11 @@ export const createDungeonMap = async () => {
       div.setAttribute('data-row', y)
       div.setAttribute('data-col', x)
 
-      if (step.enemyId) {
+      if (step.id) {
         div.setAttribute('title', `${step.name} [${step.lvl}]`);
 
         div.addEventListener('click', async () => {
-          await handlerAttackGame(step.enemyId);
+          await handlerAttackGame(step.id);
           frames[1].location.reload()
         })
       } else {
@@ -317,44 +328,38 @@ export const createDungeonMap = async () => {
 
   const drawEnemies = (div) => {
     enemiesOnMapArray = [];
-
-    const allEnemiesObjects = [...div.querySelectorAll('objects subjects object')];
-
-    allEnemiesObjects.forEach((enemyNode) => {
-      const pos = enemyNode.querySelector('position');
-      const id = enemyNode.querySelector('id');
-      const name = enemyNode.querySelector('name').getAttribute('value');
-      const lvl = enemyNode.querySelector('level') && enemyNode.querySelector('level').getAttribute('value');
-
-      enemiesOnMapArray.push({
-        x: +pos.getAttribute('x') - 1,
-        y: +pos.getAttribute('y') - 1,
-        enemyId: id.getAttribute('value'),
-        name,
-        lvl,
-      });
-    });
-
-    //////////// TODO
-
     visibleObjOnMap = [];
 
-    const allMapsObjects = [...div.querySelectorAll('interactive object')];
+    const allMapsObjects = [...div.querySelectorAll('interactive object, objects subjects object')];
 
     allMapsObjects.forEach((enemyNode) => {
       const pos = enemyNode.querySelector('position');
       const id = enemyNode.querySelector('id').getAttribute('value');
       const type = enemyNode.querySelector('type').getAttribute('value');
 
+      const name = enemyNode.querySelector('name') && enemyNode.querySelector('name').getAttribute('value');
+      const lvl = enemyNode.querySelector('level') && enemyNode.querySelector('level').getAttribute('value');
+
       visibleObjOnMap.push({
         x: +pos.getAttribute('x') - 1,
         y: +pos.getAttribute('y') - 1,
         id,
         type,
+
+        name,
+        lvl
       });
     });
 
-    //////////// TODO END
+    enemiesOnMapArray = visibleObjOnMap.filter(el => {
+      if (el.name && el.lvl) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    console.log(visibleObjOnMap)
 
     renderArray();
   };
@@ -367,34 +372,44 @@ export const createDungeonMap = async () => {
   }
 
   const handleActionNearby = () => {
-    let isHealNearBy = false;
+    let objNearMe = false;
 
-    visibleObjOnMap.forEach(healObj => {
-      if ( isObjNearMe(healObj) ) {
-        isHealNearBy = healObj;
+    visibleObjOnMap.forEach(someObj => {
+      if ( isObjNearMe(someObj) ) {
+        objNearMe = someObj;
       }
     });
 
-    if (isHealNearBy) {
-      console.log('Heal');
-      handlerHealGame(isHealNearBy.id);
-      // frames[1].location.reload();
-      return
+    if (!objNearMe) return;
+
+    switch (objNearMe.type) {
+      case 'obj_chest':
+        console.log('opening the chest');
+        handlerOpenChestGame(objNearMe.id);
+        break;
+
+      case 'obj_switch':
+        console.log('opening the door');
+        handlerOpenDoorGame(objNearMe.id);
+        break;
+
+      case 'obj_teleport':
+        console.log('using teleport');
+        handlerUseTeleportGame(objNearMe.id);
+        break;
+
+      // default:
+      //   console.log('heal myself');
+      //   handlerHealGame(objNearMe.id);
+      //   break;
     }
+    // frames[1].location.reload();
 
-    let isEnemyNear = false;
-
-    enemiesOnMapArray.forEach(enemy => {
-      if ( isObjNearMe(enemy) ) {
-        isEnemyNear = enemy;
-      }
-    });
-
-    if (isEnemyNear) {
+    if ( objNearMe.type.includes('bot_') ) {
       console.log('attack');
-      handlerAttackGame(isEnemyNear.enemyId);
+      handlerAttackGame(objNearMe.id);
+
       frames[1].location.reload();
-      return
     }
   };
 

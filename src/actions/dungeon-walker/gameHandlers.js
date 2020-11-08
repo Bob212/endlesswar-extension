@@ -61,3 +61,24 @@ export const handlerHealGame = async (objId) => {
 
   return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=restoreHPPW&objectId=${objId}&nd=${identificator}&${Math.random()}`)
 };
+
+export const handlerOpenChestGame = async (objId) => {
+  const identificator = getIdentificator();
+  if ( !identificator ) return false;
+
+  return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=activateChest&objectId=${objId}&nd=${identificator}&${Math.random()}&nd=${identificator}`)
+};
+
+export const handlerOpenDoorGame = async (objId) => {
+  const identificator = getIdentificator();
+  if ( !identificator ) return false;
+
+  return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=activateDungeonAccess&objectId=${objId}&nd=${identificator}&${Math.random()}&nd=${identificator}`)
+};
+
+export const handlerUseTeleportGame = async (objId) => {
+  const identificator = getIdentificator();
+  if ( !identificator ) return false;
+
+  return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=teleport&objectId=${objId}&nd=${identificator}&${Math.random}&nd=${identificator}`)
+};
