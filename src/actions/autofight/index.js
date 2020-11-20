@@ -1,5 +1,6 @@
-import { getCookie, currentMana, currentHp } from '../../utils.js';
+import { getCookie, currentMana, currentHp, maxMana } from '../../utils.js';
 import { reloadPage } from '../../helpers.js'; 
+import { needToReloadWindow } from '../../content.js';
 
 let isFightJustStarted = false;
 let needToWaitInFight = false;
@@ -26,7 +27,7 @@ const healRunes = [
   'https://img.endlesswar.ru/i/rune/78.gif', // 250 x 5
 ];
 
-export const autofight = (needToReloadWindow) => {
+export const autofight = () => {
   const autofight_on = getCookie('ext-carnage-autofight') == 'true';
   if (!autofight_on) return;
   if (!frames[1] || !frames[1].document) return;
@@ -89,6 +90,7 @@ export const autofight = (needToReloadWindow) => {
         return;
     } else if (frames[1].document.querySelector('#buttonRefresh')) {
         if (needToReloadWindow) {
+          needToReloadWindow = false;
           reloadPage();
         }
 
@@ -102,6 +104,7 @@ export const autofight = (needToReloadWindow) => {
     isFightJustStarted = true;
 
     if (needToReloadWindow) {
+      needToReloadWindow = false;
       reloadPage();
     }
   }

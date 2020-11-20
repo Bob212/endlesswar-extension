@@ -14,21 +14,15 @@ export const autoCreateFight = () => {
 
   if ( maxHp() != +getCookie('ext-carnage-mymaxhp') ) return;
 
-  if (
-      ( currentHp() + 150 <= maxHp() ) ||
-      ( currentMana() + 150 <= maxMana() )
-    ) {
-
   // if (
-  //     ( currentHp() < maxHp() ) ||
-  //     ( currentMana() < maxMana() ) ||
-  //     +frames[0].document.querySelector('#dvmonster').getAttribute('data-dvmonster') < 5
+  //     ( currentHp() + 150 <= maxHp() ) ||
+  //     ( currentMana() + 150 <= maxMana() )
   //   ) {
 
     if (
         (
-          ( currentHp() <= (maxHp() / 1.6) ) ||
-          ( currentMana() <= (maxMana() / 1.6) )
+          ( currentHp() <= (maxHp() / 1.3) ) ||
+          ( currentMana() <= (maxMana() / 1.3) )
         ) && getCookie('ext-carnage-auto-regeneration-in-hospital') === 'true'
       ) {
       console.log('Need to USE hospital');
@@ -44,9 +38,10 @@ export const autoCreateFight = () => {
       return;
     }
 
-    console.log('Regeneration...');
-    return;
-  }
+    // console.log('Regeneration...');
+    // return;
+    
+  // }
 
   if ( !haotFightCreate() ) return
 

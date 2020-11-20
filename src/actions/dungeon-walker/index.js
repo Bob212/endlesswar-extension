@@ -17,11 +17,22 @@ import {
   handlerUseTeleportGame
 } from './gameHandlers.js';
 
-export const createDungeonMap = async () => {
-  console.log('Map created!'); 
+import { monstersBeforePort, monstersAfterPort } from './monsters-to-destroy.js';
 
-  const mainNode = frames[1].document.querySelector('.ui-block.ui-tabs-panel.ui-widget-content.ui-corner-bottom');
-  // const mainNode = frames[1].document.querySelector('table');
+// localStorage.nearestHealPosition
+// localStorage.positionBeforeHeal
+
+export const createDungeonMap = async (isInTheFight = true) => {
+  console.log('Map created!'); 
+  let mainNode = null;
+
+  // if (isInTheFight) {
+  //   mainNode = frames[1].document.querySelector('.inv-view-col .inv-states');
+  // } else {
+  //   mainNode = frames[1].document.querySelector('#message1 + table.main-table');
+  // }
+
+  mainNode = frames[3].document.body;
 
   renderStyleIntoDom();
 
@@ -136,8 +147,8 @@ export const createDungeonMap = async () => {
       return
     }
 
-    nodeMap.style.top = `-${oneBlockWidth * (myPosition.y - 5)}px`;
-    nodeMap.style.left = `-${oneBlockWidth * (myPosition.x - 5)}px`;
+    nodeMap.style.top = `-${oneBlockWidth * (myPosition.y - 13)}px`;
+    nodeMap.style.left = `-${oneBlockWidth * (myPosition.x - 13)}px`;
   };
 
   const setMapSize = () => {
@@ -145,8 +156,8 @@ export const createDungeonMap = async () => {
       mapWrapperNode.style.width = null;
       mapWrapperNode.style.height = null;
     } else {
-      mapWrapperNode.style.width = '165px';
-      mapWrapperNode.style.height = '165px';
+      mapWrapperNode.style.width = '365px';
+      mapWrapperNode.style.height = '365px';
     }
   };
 
@@ -234,7 +245,9 @@ export const createDungeonMap = async () => {
 
         div.addEventListener('click', async () => {
           await handlerAttackGame(step.id);
-          frames[1].location.reload()
+          setTimeout(() => {
+            frames[1].location.reload();
+          }, 5000);
         })
       } else {
         div.addEventListener('click', handlerClickOnMap);
@@ -359,7 +372,7 @@ export const createDungeonMap = async () => {
       }
     });
 
-    console.log(visibleObjOnMap)
+    // console.log(visibleObjOnMap)
 
     renderArray();
   };
@@ -371,7 +384,59 @@ export const createDungeonMap = async () => {
     setMapSize();
   }
 
-  const handleActionNearby = () => {
+  const handleNearestHeal = () => {
+    const currentPosition = { x: myPosition.x, y: myPosition.y }
+    localStorage.positionBeforeHeal = JSON.stringify(currentPosition)
+
+    let targetPosition = null
+
+    if (localStorage.nearestHealPosition) {
+      targetPosition = JSON.parse(localStorage.nearestHealPosition)
+    }
+
+    if (!targetPosition) return;
+
+    way = findRouteToTarget({ y: targetPosition.y, x: targetPosition.x }, myPosition);
+    console.log(way)
+
+    automaticMove(way);
+  };
+
+  const handleBackAfterHeal = () => {
+    if (!localStorage.positionBeforeHeal) return;
+
+    const currentPosition = { x: myPosition.x, y: myPosition.y }
+
+    let targetPosition = null
+
+    if (localStorage.positionBeforeHeal) {
+      targetPosition = JSON.parse(localStorage.positionBeforeHeal)
+    }
+
+    way = findRouteToTarget({ y: targetPosition.y, x: targetPosition.x }, myPosition);
+    console.log(way)
+
+    automaticMove(way);
+  };
+
+  const handleAttackFromStack = () => {
+    const monstersArray = localStorage.dungeonMonstersStack.split(',');
+
+    handlerAttackGame(monstersArray[0]);
+
+    monstersArray.shift();
+
+    console.log(monstersArray)
+
+    localStorage.dungeonMonstersStack = monstersArray;
+  };
+
+  const handleClearAttackStack = () => {
+    localStorage.dungeonMonstersStack = monstersBeforePort;
+    // localStorage.dungeonMonstersStack = monstersAfterPort;
+  };
+
+  const handleActionNearby = async () => {
     let objNearMe = false;
 
     visibleObjOnMap.forEach(someObj => {
@@ -385,31 +450,37 @@ export const createDungeonMap = async () => {
     switch (objNearMe.type) {
       case 'obj_chest':
         console.log('opening the chest');
-        handlerOpenChestGame(objNearMe.id);
+        await handlerOpenChestGame(objNearMe.id);
+        await handleRefresh();
         break;
 
       case 'obj_switch':
         console.log('opening the door');
-        handlerOpenDoorGame(objNearMe.id);
+        await handlerOpenDoorGame(objNearMe.id);
+        await handleRefresh();
         break;
 
       case 'obj_teleport':
         console.log('using teleport');
-        handlerUseTeleportGame(objNearMe.id);
+        await handlerUseTeleportGame(objNearMe.id);
+        await handleRefresh();
         break;
 
-      // default:
-      //   console.log('heal myself');
-      //   handlerHealGame(objNearMe.id);
-      //   break;
+      case 'obj_heal':
+        console.log('heal myself');
+        await handlerHealGame(objNearMe.id);
+        await handleRefresh();
+        localStorage.nearestHealPosition = JSON.stringify({ x: myPosition.x, y: myPosition.y });
+        break;
     }
-    // frames[1].location.reload();
 
     if ( objNearMe.type.includes('bot_') ) {
       console.log('attack');
-      handlerAttackGame(objNearMe.id);
+      await handlerAttackGame(objNearMe.id);
 
-      frames[1].location.reload();
+      setTimeout(() => {
+        frames[1].location.reload();
+      }, 5000);
     }
   };
 
@@ -586,7 +657,11 @@ export const createDungeonMap = async () => {
   let automaticInterval = null;
 
   const automaticMove = (way) => {
-    if (automaticInterval) clearInterval(automaticInterval);
+    if (automaticInterval) {
+      clearInterval(automaticInterval)
+      automaticInterval = null
+      return
+    }
 
     let automaticWait = false;
     let automaticCurrentStep = 0;
@@ -596,6 +671,7 @@ export const createDungeonMap = async () => {
 
       if (!way || !way[automaticCurrentStep]) {
         clearInterval(automaticInterval);
+        automaticInterval = null
         return;
       }
 
@@ -611,6 +687,7 @@ export const createDungeonMap = async () => {
       if (i) {
         console.log('Enemy is near ...');
         clearInterval(automaticInterval)
+        automaticInterval = null
         return;
       }
 
@@ -623,11 +700,12 @@ export const createDungeonMap = async () => {
       automaticWait = false;
       automaticCurrentStep++;
 
-    }, 500);
+    }, 100);
   };
 
   const stopAutomove = () => {
     clearInterval(automaticInterval);
+    automaticInterval = null;
   };
 
   await handleRefresh();
@@ -659,7 +737,7 @@ const logKey = (e) => {
   }
 }
 
-frames[1].document.body.addEventListener('keyup', logKey);
+frames[3].document.body.addEventListener('keyup', logKey);
 // document.body.addEventListener('keyup', logKey);
 
 controllersNode.querySelector('#button-left').addEventListener('click', handleLeft);
@@ -668,5 +746,10 @@ controllersNode.querySelector('#button-reverse').addEventListener('click', handl
 controllersNode.querySelector('#button-up').addEventListener('click', handleUp);
 controllersNode.querySelector('#button-minify').addEventListener('click', handleMinify);
 controllersNode.querySelector('#button-stop-automove').addEventListener('click', stopAutomove);
+controllersNode.querySelector('#button-go-to-nearest-heal').addEventListener('click', handleNearestHeal);
+controllersNode.querySelector('#button-go-after-heal').addEventListener('click', handleBackAfterHeal);
+
+controllersNode.querySelector('#button-attack-next-monster').addEventListener('click', handleAttackFromStack);
+controllersNode.querySelector('#button-clear-monsters-local').addEventListener('click', handleClearAttackStack);
 
 };

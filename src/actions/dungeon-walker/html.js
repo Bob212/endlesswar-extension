@@ -26,7 +26,23 @@ export const html = `
 
     <br><br>
     <div class="row">
+      <button id="button-go-to-nearest-heal">Nearest Heal</button>
+    </div>
+
+    <br><br>
+    <div class="row">
+      <button id="button-go-after-heal">After Heal go Back</button>
+    </div>
+
+    <br><br>
+    <div class="row">
       <button id="button-stop-automove">Stop Automove</button>
+    </div>
+    <div class="row">
+      <button id="button-attack-next-monster">Attack Next</button>
+    </div>
+    <div class="row">
+      <button id="button-clear-monsters-local">Clear monsters array</button>
     </div>
   </div>
 </div>

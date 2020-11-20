@@ -1,7 +1,7 @@
 console.log('Endlesswar extension is now working');
 // const myNickName = 'SICKO MODE';
 // const avatar_url = 'http://img.carnage.ru/i/obraz/0_IND0012M.jpg';
-let needToReloadWindow = false;
+export let needToReloadWindow = false;
 
 // #################### HELPERS
 
@@ -16,7 +16,7 @@ import { autofight } from './actions/autofight/index.js';
 
 const main_interval = setInterval(() => {
   autofight();
-  autoCreateFight(needToReloadWindow);
+  autoCreateFight();
 }, 1500);
 
 setTimeout(() => {

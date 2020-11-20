@@ -57,6 +57,8 @@ export const checkCookie = function() {
     var lastCookie = document.cookie; // 'static' memory between function calls
 
     return function() {
+        // autoCreateDungeonMap();
+
         var currentCookie = document.cookie;
 
         if (currentCookie != lastCookie) {
@@ -73,6 +75,22 @@ export const checkCookie = function() {
     };
 }();
 
+const autoCreateDungeonMap = () => {
+  if (
+      frames[1] &&
+      frames[1].document &&
+      frames[1].document &&
+      frames[1].document.location.href.includes('https://avalon.endlesswar.ru/dungeon.php') &&
+      !frames[1].document.location.href.includes('createdmap') &&
+      getCookie('ext-carnage-auto-create-dungeon-map') == 'true'
+    ) {
+    frames[1].document.location.hash = 'createdmap'
+  
+    setTimeout(() => {
+      createDungeonMap(false);
+    }, 1000);
+  }
+}
 
 export const getIdentificator = () => {
   let cookieName = 'identifND';

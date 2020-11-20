@@ -161,7 +161,8 @@ export const style = `
 `;
 
 export const renderStyleIntoDom = () => {
-  const body  = frames[1].document.querySelector('body');
+  // const body  = frames[1].document.querySelector('body');
+  const body  = frames[3].document.querySelector('head');
   const link  = document.createElement('style');
   
   link.innerHTML = style; 

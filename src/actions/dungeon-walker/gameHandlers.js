@@ -48,6 +48,10 @@ export const handlerAttackGame = async (enemyId) => {
   const identificator = getIdentificator();
   if ( !identificator ) return false;
 
+  const getMonstersArray = localStorage.monstersInDungeon.split(',');
+  getMonstersArray.push(enemyId)
+  localStorage.monstersInDungeon = getMonstersArray
+
   return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=attack&objectId=${enemyId}&nd=${identificator}&${Math.random()}&nd=${identificator}`)
 };
 
@@ -66,12 +70,20 @@ export const handlerOpenChestGame = async (objId) => {
   const identificator = getIdentificator();
   if ( !identificator ) return false;
 
+  const getChestsArray = localStorage.chestsInDungeon.split(',');
+  getChestsArray.push(objId)
+  localStorage.chestsInDungeon = getChestsArray
+
   return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=activateChest&objectId=${objId}&nd=${identificator}&${Math.random()}&nd=${identificator}`)
 };
 
 export const handlerOpenDoorGame = async (objId) => {
   const identificator = getIdentificator();
   if ( !identificator ) return false;
+
+  const getDoorsArray = localStorage.doorsInDungeon.split(',');
+  getDoorsArray.push(objId)
+  localStorage.doorsInDungeon = getDoorsArray
 
   return await resDungeon(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=activateDungeonAccess&objectId=${objId}&nd=${identificator}&${Math.random()}&nd=${identificator}`)
 };

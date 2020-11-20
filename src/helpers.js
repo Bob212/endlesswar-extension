@@ -7,7 +7,7 @@ const saveChatBeforeQuit = () => {
 export const reloadPage = () => {
   if ( getCookie('ext-carnage-auto-reload-page') === 'false' ) return;
 
-  needToReloadWindow = false;
+  // needToReloadWindow = false;
 
   saveChatBeforeQuit();
 
