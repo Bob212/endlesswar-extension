@@ -2,6 +2,7 @@ import { renderStyleIntoDom } from './style.js';
 import { renderHTMLIntoDom } from './html.js';
 import { gribnicaMap } from './maps.js';
 import { gribnicaStrategy } from './strategy.js';
+import { getIdentificator } from '../../utils.js';
 
 import { handlePosPlugin } from './moveHandlers.js';
 import {
@@ -17,7 +18,7 @@ import {
   handlerUseTeleportGame
 } from './gameHandlers.js';
 
-import { monstersBeforePort, monstersAfterPort } from './monsters-to-destroy.js';
+import { monstersBeforePort, monstersAfterPort, chestsInDungeon } from './monsters-to-destroy.js';
 
 // localStorage.nearestHealPosition
 // localStorage.positionBeforeHeal
@@ -436,6 +437,33 @@ export const createDungeonMap = async (isInTheFight = true) => {
     // localStorage.dungeonMonstersStack = monstersAfterPort;
   };
 
+  const handleCleanNextChest = () => {
+    localStorage.chestsInStack = chestsInDungeon;
+  };
+
+  const handleOpenNextChest = () => {
+    const monstersArray = localStorage.chestsInStack.split(',');
+
+    handlerOpenChestGame(monstersArray[0]);
+
+    monstersArray.shift();
+
+    console.log(monstersArray)
+
+    localStorage.chestsInStack = monstersArray;
+  };
+
+  const handleEnterDungeon = () => {
+    fetch(`https://avalon.endlesswar.ru/dungeon_bid.php?cmd=start&${Math.random()}`);
+  };
+
+  const handleExitDungeon = () => {
+    const identificator = getIdentificator();
+    if ( !identificator ) return false;
+    
+    fetch(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=escape&objectId=sub223728029&nd=${identificator}&${Math.random()}`)
+  };
+
   const handleActionNearby = async () => {
     let objNearMe = false;
 
@@ -740,11 +768,11 @@ const logKey = (e) => {
 frames[3].document.body.addEventListener('keyup', logKey);
 // document.body.addEventListener('keyup', logKey);
 
-controllersNode.querySelector('#button-left').addEventListener('click', handleLeft);
-controllersNode.querySelector('#button-right').addEventListener('click', handleRight);
-controllersNode.querySelector('#button-reverse').addEventListener('click', handleReverse);
-controllersNode.querySelector('#button-up').addEventListener('click', handleUp);
-controllersNode.querySelector('#button-minify').addEventListener('click', handleMinify);
+// controllersNode.querySelector('#button-left').addEventListener('click', handleLeft);
+// controllersNode.querySelector('#button-right').addEventListener('click', handleRight);
+// controllersNode.querySelector('#button-reverse').addEventListener('click', handleReverse);
+// controllersNode.querySelector('#button-up').addEventListener('click', handleUp);
+// controllersNode.querySelector('#button-minify').addEventListener('click', handleMinify);
 controllersNode.querySelector('#button-stop-automove').addEventListener('click', stopAutomove);
 controllersNode.querySelector('#button-go-to-nearest-heal').addEventListener('click', handleNearestHeal);
 controllersNode.querySelector('#button-go-after-heal').addEventListener('click', handleBackAfterHeal);
@@ -752,4 +780,9 @@ controllersNode.querySelector('#button-go-after-heal').addEventListener('click',
 controllersNode.querySelector('#button-attack-next-monster').addEventListener('click', handleAttackFromStack);
 controllersNode.querySelector('#button-clear-monsters-local').addEventListener('click', handleClearAttackStack);
 
+controllersNode.querySelector('#button-clear-chests-local').addEventListener('click', handleCleanNextChest);
+controllersNode.querySelector('#button-open-next-chest').addEventListener('click', handleOpenNextChest);
+
+controllersNode.querySelector('#button-enter-dungeon').addEventListener('click', handleEnterDungeon);
+controllersNode.querySelector('#button-exit-dungeon').addEventListener('click', handleExitDungeon);
 };
