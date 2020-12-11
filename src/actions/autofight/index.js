@@ -1,5 +1,5 @@
 import { getCookie, currentMana, currentHp, maxMana } from '../../utils.js';
-import { reloadPage } from '../../helpers.js'; 
+import { reloadPage } from '../../helpers.js';
 import { needToReloadWindow } from '../../content.js';
 
 let isFightJustStarted = false;
@@ -30,9 +30,9 @@ const healRunes = [
 export const autofight = () => {
   const autofight_on = getCookie('ext-carnage-autofight') == 'true';
   if (!autofight_on) return;
-  if (!frames[1] || !frames[1].document) return;
+  if (!frames[2] || !frames[2].document) return;
 
-  let locationStr = frames[1].document.location.href;
+  let locationStr = frames[2].document.location.href;
 
   if (locationStr.includes('https://avalon.endlesswar.ru/fbattle.php')) {
     if (needToWaitInFight || beginningDelay) {
@@ -40,8 +40,8 @@ export const autofight = () => {
       return;
     }
 
-    const name1Node = frames[1].document.querySelector('.inv-view-col .nickname .name.side-1');
-    const name2Node = frames[1].document.querySelector('.inv-view-col .nickname .name.side-2');
+    const name1Node = frames[2].document.querySelector('.inv-view-col .nickname .name.side-1');
+    const name2Node = frames[2].document.querySelector('.inv-view-col .nickname .name.side-2');
 
     if (
         name1Node && name1Node.innerText === 'Злой Хряк' ||
@@ -85,16 +85,16 @@ export const autofight = () => {
 
     console.log('Hit an oppenent');
 
-    if (frames[1].document.forms['bform']) {
-        frames[1].document.forms['bform'].submit();
+    if (frames[2].document.forms['bform']) {
+        frames[2].document.forms['bform'].submit();
         return;
-    } else if (frames[1].document.querySelector('#buttonRefresh')) {
+    } else if (frames[2].document.querySelector('#buttonRefresh')) {
         if (needToReloadWindow) {
           needToReloadWindow = false;
           reloadPage();
         }
 
-        frames[1].document.querySelector('#buttonRefresh').click();
+        frames[2].document.querySelector('#buttonRefresh').click();
         return;
     }
 
@@ -111,8 +111,8 @@ export const autofight = () => {
 };
 
 const exitTheFight = () => {
-  if (frames[1].document.querySelector('.xbbutton')) {
-    frames[1].document.querySelector('.xbbutton').click();
+  if (frames[2].document.querySelector('.xbbutton')) {
+    frames[2].document.querySelector('.xbbutton').click();
 
     isFightJustStarted = true;
     // manaUses.current = 0;
@@ -129,7 +129,7 @@ const callDragonsForFight = (numOfCalls) => {
     setTimeout(() => {
       console.log('Call dragon num: ', i+1);
 
-      frames[1].location.href = 'https://avalon.endlesswar.ru/fbattle.php?cmd=ability.summon_pet';;
+      frames[2].location.href = 'https://avalon.endlesswar.ru/fbattle.php?cmd=ability.summon_pet';;
     }, (i+1)*delay);
   }
 
@@ -199,7 +199,7 @@ const useHeal = () => {
 };
 
 const clickOnRuna = (src) => {
-  const runesNodes = [...frames[1].document.querySelectorAll('li[data-slot-name="rune"]')];
+  const runesNodes = [...frames[2].document.querySelectorAll('li[data-slot-name="rune"]')];
 
   const finder = runesNodes.find(node => {
     const imgNode = node.querySelector('img');
@@ -212,7 +212,7 @@ const clickOnRuna = (src) => {
 
         link = link.slice(1, -1);
 
-        frames[1].document.location.href = `https://avalon.endlesswar.ru/${link}`;
+        frames[2].document.location.href = `https://avalon.endlesswar.ru/${link}`;
 
         // https://avalon.endlesswar.ru/fbattle.php?use=9219308
         return true;

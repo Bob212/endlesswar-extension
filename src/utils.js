@@ -17,7 +17,6 @@ export const getCookie = (name) => {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 };
 
-
 export const setCookie = (name, value, options = {}) => {
   options = {
     path: '/',
@@ -42,7 +41,6 @@ export const setCookie = (name, value, options = {}) => {
   document.cookie = updatedCookie;
 };
 
-
 export const deleteCookie = (name) => {
   setCookie(name, "", {
     'max-age': -1
@@ -57,7 +55,6 @@ export const checkCookie = function() {
     var lastCookie = document.cookie; // 'static' memory between function calls
 
     return function() {
-        // autoCreateDungeonMap();
 
         var currentCookie = document.cookie;
 
@@ -75,55 +72,40 @@ export const checkCookie = function() {
     };
 }();
 
-const autoCreateDungeonMap = () => {
-  if (
-      frames[1] &&
-      frames[1].document &&
-      frames[1].document &&
-      frames[1].document.location.href.includes('https://avalon.endlesswar.ru/dungeon.php') &&
-      !frames[1].document.location.href.includes('createdmap') &&
-      getCookie('ext-carnage-auto-create-dungeon-map') == 'true'
-    ) {
-    frames[1].document.location.hash = 'createdmap'
-  
-    setTimeout(() => {
-      createDungeonMap(false);
-    }, 1000);
-  }
-}
-
 export const getIdentificator = () => {
-  let cookieName = 'identifND';
+  // let cookieName = 'identifND';
 
-  if (sessionStorage[cookieName]) {
-    return +sessionStorage[cookieName];
-  }
+  // if (sessionStorage[cookieName]) {
+  //   return +sessionStorage[cookieName];
+  // }
 
-  if (!frames[1].document.querySelector('input[name="nd"]')) {
-    frames[1].document.location.href = `https://avalon.endlesswar.ru/inventory.php?${Math.random()}`
-    console.log('Нужно зайти в инвентарь!');
-    return false;
-  }
+  // if (!frames[2].document.querySelector('input[name="nd"]')) {
+  //   frames[2].document.location.href = `https://avalon.endlesswar.ru/inventory.php?${Math.random()}`
+  //   console.log('Нужно зайти в инвентарь!');
+  //   return false;
+  // }
 
-  let identificator = frames[1].document.querySelector('input[name="nd"]').value;
+  // let identificator = frames[2].document.querySelector('input[name="nd"]').value;
 
-  sessionStorage[cookieName] = `${identificator}`
+  // sessionStorage[cookieName] = `${identificator}`
 
-  return identificator
+  // return identificator
+
+  return getCookie('nd');
 };
 
 export const currentHp = () => {
-  return +frames[0].document.querySelector('#dvhp').innerText;
+  return +frames[1].document.querySelector('#dvhp').innerText;
 };
 
 export const maxHp = () => {
-  return +frames[0].document.querySelector('#dvmaxhp').innerText;
+  return +frames[1].document.querySelector('#dvmaxhp').innerText;
 };
 
 export const currentMana = () => {
-  return +frames[0].document.querySelector('#dvmana').innerText;
+  return +frames[1].document.querySelector('#dvmana').innerText;
 };
 
 export const maxMana = () => {
-  return +frames[0].document.querySelector('#dvmaxmana').innerText;
+  return +frames[1].document.querySelector('#dvmaxmana').innerText;
 };

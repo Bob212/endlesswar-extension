@@ -1,7 +1,7 @@
 import { getCookie } from './utils.js';
 
 const saveChatBeforeQuit = () => {
-  localStorage.avalonMessages = frames[2].frames[1].document.querySelector('#chat-channels').children[1].innerHTML;
+  localStorage.avalonMessages = frames[3].frames[1].document.querySelector('#chat-channels').children[1].innerHTML;
 };
 
 export const reloadPage = () => {
@@ -19,8 +19,8 @@ export const reloadPage = () => {
 
 export const pasteChat = () => {
   setTimeout(() => {
-    if (localStorage.avalonMessages && frames[2] && localStorage.avalonMessages) {
-      const chatContainer = frames[2].frames[1].document.querySelector('#chat-channels').children[1];
+    if (localStorage.avalonMessages && frames[3] && localStorage.avalonMessages) {
+      const chatContainer = frames[3].frames[1].document.querySelector('#chat-channels').children[1];
       chatContainer.innerHTML = `${localStorage.avalonMessages}${chatContainer.innerHTML}`;
     }
   }, 5000);

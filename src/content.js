@@ -10,6 +10,7 @@ import { pasteChat } from './helpers.js';
 
 import { autoCreateFight } from './actions/autoCreateFight.js';
 import { autofight } from './actions/autofight/index.js';
+import { goldDigger } from './actions/gold-digger/index.js';
 
 
 // #################### MAIN functions
@@ -17,6 +18,7 @@ import { autofight } from './actions/autofight/index.js';
 const main_interval = setInterval(() => {
   autofight();
   autoCreateFight();
+  goldDigger();
 }, 1500);
 
 setTimeout(() => {

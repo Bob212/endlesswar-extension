@@ -149,7 +149,7 @@
   <div class="where-to-put"></div>
 <script>
 
-// const body  = frames[1].document.querySelector('body');
+// const body  = frames[2].document.querySelector('body');
 // const link  = document.createElement('style');
 // link.innerHTML = ``;
 // body.appendChild(link);
@@ -170,7 +170,7 @@ const renderHTML = `
       <button id="button-left">left</button>
       <button id="button-right">right</button>
     </div>
-    
+
     <div class="row">
       <button id="button-reverse">reverse</button>
     </div>
@@ -183,7 +183,7 @@ const renderHTML = `
 </div>`;
 
 const mainNode = document.querySelector('.where-to-put');
-// const mainNode = frames[1].document.querySelector('.main-table');
+// const mainNode = frames[2].document.querySelector('.main-table');
 mainNode.innerHTML = renderHTML;
 
 const mapArray = [
@@ -1956,7 +1956,7 @@ const strategy = [
 
   {
     coords: { y: 33, x: 10 },
-    action: 'openTheDoor', // { y: 33, x: 20 }, { y: 37, x: 22 }, { y: 36, x: 25 } 
+    action: 'openTheDoor', // { y: 33, x: 20 }, { y: 37, x: 22 }, { y: 36, x: 25 }
   },
 
   {
@@ -2044,7 +2044,7 @@ const handlerClickOnMap = (element) => {
   // Close the door
   if (mapArray[row][col] === '*') {
     mapArray[row][col] = '|';
-    
+
     renderArray();
     return;
   }
@@ -2067,7 +2067,7 @@ const handlerClickOnMap = (element) => {
   // mapArray[row][col] = mapArray[row][col] === '#' ? '|' : '.';
 
   // renderArray()
-}; 
+};
 
 const chasingToPers = () => {
   if (!minifyMap) {
@@ -2361,7 +2361,7 @@ const howShouldIMove = (routeArray) => {
 
   const comparePositions = (pos1, pos2) => {
     return pos1.x === pos2.x && pos1.y === pos2.y
-  } 
+  }
 
   routeArray.forEach(nextPosition => {
     while (true) {
@@ -2420,7 +2420,7 @@ const logKey = (e) => {
   }
 }
 
-// frames[1].document.body.addEventListener('keyup', logKey);
+// frames[2].document.body.addEventListener('keyup', logKey);
 document.body.addEventListener('keyup', logKey);
 
 // chasingToPers();

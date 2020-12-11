@@ -72,7 +72,7 @@ const cookieDomMatch = [
   { cookie: 'ext-carnage-auto-reload-page', domElement: '#auto-reload-page' },
   { cookie: 'ext-carnage-auto-regeneration-in-hospital', domElement: '#auto-regeneration-in-hospital' },
   { cookie: 'ext-carnage-autofight-autoheal', domElement: '#autofight-autoheal' },
-  { cookie: 'ext-carnage-auto-create-dungeon-map', domElement: '#auto-create-dungeon-map' },
+  { cookie: 'ext-carnage-auto-gold-digger', domElement: '#auto-gold-digger' },
   // { cookie: 'ext-carnage-autocreate-fight-with-shadow', domElement: "#auto-create-fight-with-bot" },
 ];
 

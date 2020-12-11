@@ -7,11 +7,11 @@ export const autoCreateFight = () => {
 
   const autocreate_with_bot = getCookie('ext-carnage-auto-create-haot-fight') == 'true';
   if (!autocreate_with_bot) return;
-  if (!frames[1] || !frames[1].document) return;
+  if (!frames[2] || !frames[2].document) return;
 
-  let locationStr = frames[1].document.location.href;
+  let locationStr = frames[2].document.location.href;
+
   if (locationStr.includes('https://avalon.endlesswar.ru/fbattle.php')) return
-
   if ( maxHp() != +getCookie('ext-carnage-mymaxhp') ) return;
 
   // if (
@@ -40,7 +40,7 @@ export const autoCreateFight = () => {
 
     // console.log('Regeneration...');
     // return;
-    
+
   // }
 
   if ( !haotFightCreate() ) return
@@ -50,6 +50,6 @@ export const autoCreateFight = () => {
 
   setTimeout(() => {
     autofightCreateWait = false;
-  }, 60000 * 3); // 3 mins
+  }, 60 * 1000 * 1.5); // 1.5 mins
 
 };

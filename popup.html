@@ -10,11 +10,6 @@
       margin: 16px 10px;
     }
 
-    .flex {
-      display: flex;
-      justify-content: space-between;
-    }
-
     button {
       display: flex;
       align-items: center;
@@ -35,15 +30,6 @@
       background: red;
     }
 
-    .test-button {
-      background: #fdbd03;
-      margin-bottom: 16px;
-    }
-
-    .stage-button {
-      background: #27AE60;
-    }
-
     .little-num {
       width: 50px;
     }
@@ -60,16 +46,16 @@
   </p>
 
   <p>
-    <input type="checkbox" id="auto-create-dungeon-map">
-    <label for="auto-create-dungeon-map">Auto Create Map</label>
+    <input type="checkbox" id="auto-gold-digger">
+    <label for="auto-gold-digger">Gold Digger</label>
   </p>
 
   <div class="alert alert-primary" role="alert">
     Autofight settings
   </div>
 
-  <div class="flex">
-    <div>
+  <div class="row">
+    <div class="col-6">
       <p>
         <input type="checkbox" id="autofight-check">
         <label for="autofight-check">Autofight</label>
@@ -90,7 +76,8 @@
         <input class="little-num" type="number" value="0" id="autofight-delay">
       </p>
     </div>
-    <div>
+
+    <div class="col-6">
       <p> &nbsp;</p>
 
       <p>
@@ -129,37 +116,42 @@
     <label for="auto-create-fight-haot">Auto create HAOT fight</label>
   </p>
 
-  <!-- <p>
-    <input type="radio" name="create-fight" id="auto-create-fight-with-bot">
-    <label for="auto-create-fight-with-bot">Fight with shadow</label>
-
-    <input type="radio" name="create-fight" id="auto-create-fight-haot">
-    <label for="auto-create-fight-haot">Haot fight</label>
-  </p> -->
-
   <div class="alert alert-primary" role="alert">
     Daily things
   </div>
 
-  <p>
-    <button id="spin-wheel" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/cookie.png" width="24" alt="cookie">Spin wheel</button>
-  </p>
+  <div class="row">
+    <div class="col-5">
+      <p>
+        <button id="spin-wheel" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/cookie.png" width="24"
+            alt="cookie">Spin wheel</button>
+      </p>
 
-  <p>
-    <button id="shadow-fight" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/swords.png" width="14" alt="shadow fight"> Shadow Fight</button>
-  </p>
+      <p>
+        <button id="hospital-cure" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/cure.png" width="16"
+            alt="shadow fight"> Hospital Cure</button>
+      </p>
 
-  <p>
-    <button id="haot-fight-create" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/swords.png" width="14" alt="shadow fight"><img src="./images/icons/swords.png" width="14" alt="haot fight"> Haot Fight</button>
-  </p>
+      <p>
+        <button id="clear-chat" type="button" class="btn btn-warning btn-sm">Clear chat</button>
+      </p>
+    </div>
 
-  <p>
-    <button id="hospital-cure" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/cure.png" width="16" alt="shadow fight"> Hospital Cure</button>
-  </p>
+    <div class="col-5">
+      <p>
+        <button id="shadow-fight" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/swords.png" width="14"
+            alt="shadow fight"> Shadow Fight</button>
+      </p>
 
-  <p>
-    <button id="clear-chat" type="button" class="btn btn-warning btn-sm">Clear chat</button>
-  </p>
+      <p>
+        <button id="haot-fight-create" type="button" class="btn btn-primary btn-sm"><img src="./images/icons/swords.png"
+            width="14" alt="shadow fight"><img src="./images/icons/swords.png" width="14" alt="haot fight"> Haot
+          Fight</button>
+      </p>
+    </div>
+  </div>
+
+
 
   <p>
     <button id="insert-map" type="button" class="btn btn-primary btn-sm">

@@ -1,10 +1,10 @@
 // Setting new stats
 
-let oldStr = +frames[2].document.querySelector('#str').innerText;
-let oldLovk = +frames[2].document.querySelector('#dex').innerText;
-let oldInta = +frames[2].document.querySelector('#suc').innerText;
-let oldVinos = +frames[2].document.querySelector('#end').innerText;
-let oldIntel = +frames[2].document.querySelector('#int').innerText;
+let oldStr = +frames[3].document.querySelector('#str').innerText;
+let oldLovk = +frames[3].document.querySelector('#dex').innerText;
+let oldInta = +frames[3].document.querySelector('#suc').innerText;
+let oldVinos = +frames[3].document.querySelector('#end').innerText;
+let oldIntel = +frames[3].document.querySelector('#int').innerText;
 
 let strDifference = 20000; // Сила
 let lovkDifference = 300000; // Ловкость

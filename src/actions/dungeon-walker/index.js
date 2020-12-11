@@ -18,22 +18,22 @@ import {
   handlerUseTeleportGame
 } from './gameHandlers.js';
 
-import { monstersBeforePort, monstersAfterPort, chestsInDungeon } from './monsters-to-destroy.js';
+import { monstersBeforePort, monstersAfterPort, monstersOther, chestsInDungeon } from './monsters-to-destroy.js';
 
 // localStorage.nearestHealPosition
 // localStorage.positionBeforeHeal
 
 export const createDungeonMap = async (isInTheFight = true) => {
-  console.log('Map created!'); 
+  console.log('Map created!');
   let mainNode = null;
 
   // if (isInTheFight) {
-  //   mainNode = frames[1].document.querySelector('.inv-view-col .inv-states');
+  //   mainNode = frames[2].document.querySelector('.inv-view-col .inv-states');
   // } else {
-  //   mainNode = frames[1].document.querySelector('#message1 + table.main-table');
+  //   mainNode = frames[2].document.querySelector('#message1 + table.main-table');
   // }
 
-  mainNode = frames[3].document.body;
+  mainNode = frames[4].document.body;
 
   renderStyleIntoDom();
 
@@ -114,7 +114,7 @@ export const createDungeonMap = async (isInTheFight = true) => {
     // Close the door
     if (mapArray[row][col] === '*') {
       mapArray[row][col] = '|';
-      
+
       renderArray();
       return;
     }
@@ -139,7 +139,7 @@ export const createDungeonMap = async (isInTheFight = true) => {
     // mapArray[row][col] = mapArray[row][col] === '#' ? '|' : '.';
 
     // renderArray()
-  }; 
+  };
 
   const chasingToPers = () => {
     if (!minifyMap) {
@@ -247,7 +247,7 @@ export const createDungeonMap = async (isInTheFight = true) => {
         div.addEventListener('click', async () => {
           await handlerAttackGame(step.id);
           setTimeout(() => {
-            frames[1].location.reload();
+            frames[2].location.reload();
           }, 5000);
         })
       } else {
@@ -433,8 +433,10 @@ export const createDungeonMap = async (isInTheFight = true) => {
   };
 
   const handleClearAttackStack = () => {
-    localStorage.dungeonMonstersStack = monstersBeforePort;
+    // localStorage.dungeonMonstersStack = monstersBeforePort;
     // localStorage.dungeonMonstersStack = monstersAfterPort;
+
+    localStorage.dungeonMonstersStack = [...monstersBeforePort, ...monstersAfterPort,...monstersOther];
   };
 
   const handleCleanNextChest = () => {
@@ -460,7 +462,7 @@ export const createDungeonMap = async (isInTheFight = true) => {
   const handleExitDungeon = () => {
     const identificator = getIdentificator();
     if ( !identificator ) return false;
-    
+
     fetch(`https://avalon.endlesswar.ru/dungeon_xml.php?cmd=escape&objectId=sub223728029&nd=${identificator}&${Math.random()}`)
   };
 
@@ -507,7 +509,7 @@ export const createDungeonMap = async (isInTheFight = true) => {
       await handlerAttackGame(objNearMe.id);
 
       setTimeout(() => {
-        frames[1].location.reload();
+        frames[2].location.reload();
       }, 5000);
     }
   };
@@ -631,7 +633,7 @@ export const createDungeonMap = async (isInTheFight = true) => {
 
     const comparePositions = (pos1, pos2) => {
       return pos1.x === pos2.x && pos1.y === pos2.y
-    } 
+    }
 
     // console.log(routeArray)
 
@@ -765,7 +767,7 @@ const logKey = (e) => {
   }
 }
 
-frames[3].document.body.addEventListener('keyup', logKey);
+frames[4].document.body.addEventListener('keyup', logKey);
 // document.body.addEventListener('keyup', logKey);
 
 // controllersNode.querySelector('#button-left').addEventListener('click', handleLeft);

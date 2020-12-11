@@ -29,7 +29,7 @@ export const spinDemiurgsWheel = async () => {
 };
 
 export const clearChat = () => {
-  frames[2].frames[1].document.querySelector('#chat-channels').children[1].innerHTML = ``;
+  frames[3].frames[1].document.querySelector('#chat-channels').children[1].innerHTML = ``;
   localStorage.avalonMessages = '';
 };
 
@@ -38,13 +38,13 @@ export const hospitalCure = () => {
   if (!identificator) return;
 
   console.log('Hospital Cure');
-  frames[1].document.location.href = `https://avalon.endlesswar.ru/hospital.php?cmd=hospital.show&set=recovery&nd=${identificator}&${Math.random()}`
+  frames[2].document.location.href = `https://avalon.endlesswar.ru/hospital.php?cmd=hospital.show&set=recovery&nd=${identificator}&${Math.random()}`
 };
 
 
 export const shadowFight = () => {
   console.log('Fighting with Shadow!');
-  frames[1].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?level=duel&duel_shadow=1`;
+  frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?level=duel&duel_shadow=1`;
 };
 
 export const haotFightCreate = () => {
@@ -53,10 +53,10 @@ export const haotFightCreate = () => {
   if (!identificator) return false;
 
   console.log('Creating haot fight');
-  // frames[1].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&cmt=&open=1`
-  frames[1].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&blood=1&cmt=&open=1`
+  // frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&cmt=&open=1`
+  frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&blood=1&cmt=&open=1`
 
-  // frames[1].document.location.href = `https://avalon.endlesswar.ru/map.php?cmd=hell`;
+  // frames[2].document.location.href = `https://avalon.endlesswar.ru/map.php?cmd=hell`;
 
   return true;
 };
