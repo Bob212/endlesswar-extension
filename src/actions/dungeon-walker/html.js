@@ -6,25 +6,15 @@ export const html = `
 
 <div class="controllers">
   <div class="inner">
-    <div class="row">
-      <button id="button-go-to-nearest-heal">Nearest Heal</button>
-    </div>
 
     <div class="row">
-      <button id="button-go-after-heal">After Heal go Back</button>
+      <button id="button-load-monsters-dungeon1">Load monsters from Dungeon 1</button>
+      <button id="button-load-monsters-dungeon2">Load monsters from Dungeon 2</button>
+      <button id="button-load-monsters-dungeon-labyrinth">Load monsters from Dungeon Labyrinth</button>
     </div>
 
-    <br><br>
-    <div class="row">
-      <button id="button-stop-automove">Stop Automove</button>
-    </div>
-
-    <br><br>
     <div class="row">
       <button id="button-attack-next-monster">Attack Next</button>
-    </div>
-    <div class="row">
-      <button id="button-clear-monsters-local">Clear monsters array</button>
     </div>
 
     <br><br>

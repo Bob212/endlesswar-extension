@@ -1,4 +1,14 @@
-import { spinDemiurgsWheel, shadowFight, haotFightCreate, hospitalCure, clearChat } from './actions.js';
+import {
+  spinDemiurgsWheel,
+  shadowFight,
+  haotFightCreate,
+  hospitalCure,
+  clearChat,
+  setCurrentStatsToCookie,
+  fetchStats,
+  fetchFood,
+} from './actions.js';
+
 import { createDungeonMap } from './actions/dungeon-walker/index.js';
 
 const cookieButtons = [
@@ -8,6 +18,9 @@ const cookieButtons = [
   {cookieName: 'ext-carnage-hospital-cure', func: hospitalCure},
   {cookieName: 'ext-carnage-clear-chat', func: clearChat},
   {cookieName: 'ext-carnage-create-dungeon-map', func: createDungeonMap},
+  {cookieName: 'ext-carnage-get-stats', func: setCurrentStatsToCookie},
+  {cookieName: 'ext-carnage-save-stats', func: fetchStats},
+  { cookieName: 'ext-carnage-use-food', func: fetchFood},
 ];
 
 export const getCookie = (name) => {

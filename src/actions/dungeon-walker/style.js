@@ -14,6 +14,8 @@ export const style = `
     position: relative;
 
     transition: .3s;
+
+    display: none;
   }
 
   #map img {
@@ -157,7 +159,6 @@ export const style = `
     justify-content: center;
     margin-bottom: 5px;
   }
-
 `;
 
 export const renderStyleIntoDom = () => {

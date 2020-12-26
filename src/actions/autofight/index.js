@@ -25,6 +25,7 @@ const healRunes = [
   'https://img.endlesswar.ru/i/rune/8.gif', // 250 x 2
   'https://img.endlesswar.ru/i/rune/9.gif', // 500 x 1
   'https://img.endlesswar.ru/i/rune/78.gif', // 250 x 5
+  'https://img.endlesswar.ru/i/rune/23.gif' // 500 x 3
 ];
 
 export const autofight = () => {
@@ -86,6 +87,28 @@ export const autofight = () => {
     console.log('Hit an oppenent');
 
     if (frames[2].document.forms['bform']) {
+        // temporary START
+        // if (frames[2].document.querySelector(`input[name="to"]`)) {
+        //   const botsArray = localStorage.botsInHaot.split(',');
+        //   botsArray.push(frames[2].document.querySelector(`input[name="to"]`).value)
+        //   localStorage.botsInHaot = botsArray
+        // }
+        // temporary END
+        if (
+            frames[2].document.querySelector(`input[name="to"]`) &&
+            frames[2].document.querySelector(`input[name="to"]`).value.length < 6
+          ) {
+          console.log('Кто то лишний в моем бою :)')
+          console.log(frames[2].document.querySelector(`input[name="to"]`).value)
+
+          let audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+          audio.play();
+
+          clickOnRuna('https://img.endlesswar.ru/i/rune/20.gif');
+
+          return;
+        }
+
         frames[2].document.forms['bform'].submit();
         return;
     } else if (frames[2].document.querySelector('#buttonRefresh')) {

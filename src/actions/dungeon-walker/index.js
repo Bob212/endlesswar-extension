@@ -18,10 +18,24 @@ import {
   handlerUseTeleportGame
 } from './gameHandlers.js';
 
-import { monstersBeforePort, monstersAfterPort, monstersOther, chestsInDungeon } from './monsters-to-destroy.js';
+import { monstersBeforePort, monstersAfterPort, monstersOther, chestsInDungeon, monstersInDungeon2, monstersInLabyrinth } from './monsters-to-destroy.js';
 
 // localStorage.nearestHealPosition
 // localStorage.positionBeforeHeal
+
+
+
+export const handleAttackFromStack = () => {
+  const monstersArray = localStorage.dungeonMonstersStack.split(',');
+
+  handlerAttackGame(monstersArray[0]);
+
+  monstersArray.shift();
+
+  console.log(monstersArray)
+
+  localStorage.dungeonMonstersStack = monstersArray;
+};
 
 export const createDungeonMap = async (isInTheFight = true) => {
   console.log('Map created!');
@@ -420,23 +434,28 @@ export const createDungeonMap = async (isInTheFight = true) => {
     automaticMove(way);
   };
 
-  const handleAttackFromStack = () => {
-    const monstersArray = localStorage.dungeonMonstersStack.split(',');
-
-    handlerAttackGame(monstersArray[0]);
-
-    monstersArray.shift();
-
-    console.log(monstersArray)
-
-    localStorage.dungeonMonstersStack = monstersArray;
-  };
-
   const handleClearAttackStack = () => {
     // localStorage.dungeonMonstersStack = monstersBeforePort;
     // localStorage.dungeonMonstersStack = monstersAfterPort;
 
-    localStorage.dungeonMonstersStack = [...monstersBeforePort, ...monstersAfterPort,...monstersOther];
+    // localStorage.dungeonMonstersStack = [...monstersBeforePort, ...monstersAfterPort,...monstersOther];
+    // localStorage.dungeonMonstersStack = monstersInDungeon2;
+    // localStorage.dungeonMonstersStack = monstersInLabyrinth;
+  };
+
+  const loadMonstersFromDungeon1 = () => {
+    localStorage.dungeonMonstersStack = [...monstersBeforePort, ...monstersAfterPort, ...monstersOther];
+    console.log(localStorage.dungeonMonstersStack);
+  };
+
+  const loadMonstersFromDungeon2 = () => {
+    localStorage.dungeonMonstersStack = monstersInDungeon2;
+    console.log(localStorage.dungeonMonstersStack);
+  };
+
+  const loadMonstersFromLabyrinth = () => {
+    localStorage.dungeonMonstersStack = monstersInLabyrinth;
+    console.log(localStorage.dungeonMonstersStack);
   };
 
   const handleCleanNextChest = () => {
@@ -775,12 +794,15 @@ frames[4].document.body.addEventListener('keyup', logKey);
 // controllersNode.querySelector('#button-reverse').addEventListener('click', handleReverse);
 // controllersNode.querySelector('#button-up').addEventListener('click', handleUp);
 // controllersNode.querySelector('#button-minify').addEventListener('click', handleMinify);
-controllersNode.querySelector('#button-stop-automove').addEventListener('click', stopAutomove);
-controllersNode.querySelector('#button-go-to-nearest-heal').addEventListener('click', handleNearestHeal);
-controllersNode.querySelector('#button-go-after-heal').addEventListener('click', handleBackAfterHeal);
+// controllersNode.querySelector('#button-stop-automove').addEventListener('click', stopAutomove);
+// controllersNode.querySelector('#button-go-to-nearest-heal').addEventListener('click', handleNearestHeal);
+// controllersNode.querySelector('#button-go-after-heal').addEventListener('click', handleBackAfterHeal);
 
 controllersNode.querySelector('#button-attack-next-monster').addEventListener('click', handleAttackFromStack);
-controllersNode.querySelector('#button-clear-monsters-local').addEventListener('click', handleClearAttackStack);
+// controllersNode.querySelector('#button-clear-monsters-local').addEventListener('click', handleClearAttackStack);
+  controllersNode.querySelector('#button-load-monsters-dungeon-labyrinth').addEventListener('click', loadMonstersFromLabyrinth);
+  controllersNode.querySelector('#button-load-monsters-dungeon1').addEventListener('click', loadMonstersFromDungeon1);
+  controllersNode.querySelector('#button-load-monsters-dungeon2').addEventListener('click', loadMonstersFromDungeon2);
 
 controllersNode.querySelector('#button-clear-chests-local').addEventListener('click', handleCleanNextChest);
 controllersNode.querySelector('#button-open-next-chest').addEventListener('click', handleOpenNextChest);

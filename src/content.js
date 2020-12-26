@@ -9,6 +9,7 @@ import { checkCookie } from './utils.js';
 import { pasteChat } from './helpers.js';
 
 import { autoCreateFight } from './actions/autoCreateFight.js';
+import { autoCreateDungeonFight } from './actions/autoCreateDungeonFight.js';
 import { autofight } from './actions/autofight/index.js';
 import { goldDigger } from './actions/gold-digger/index.js';
 
@@ -18,6 +19,7 @@ import { goldDigger } from './actions/gold-digger/index.js';
 const main_interval = setInterval(() => {
   autofight();
   autoCreateFight();
+  autoCreateDungeonFight();
   goldDigger();
 }, 1500);
 
