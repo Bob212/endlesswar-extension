@@ -54,8 +54,8 @@ export const haotFightCreate = () => {
 
   console.log('Creating haot fight');
   // frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&cmt=&open=1` // не кровавый
-  // frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&blood=1&cmt=&open=1` // кровавый только мой уровень
-  frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=6&startime2=3&timeout=3&blood=1&cmt=&open=1` // кровавый +-1 уровень
+  frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=3&startime2=3&timeout=3&blood=1&cmt=&open=1` // кровавый только мой уровень
+  // frames[2].document.location.href = `https://avalon.endlesswar.ru/zayavka.php?nd=${identificator}&cmd=haot.create&gradesmembers=6&startime2=3&timeout=3&blood=1&cmt=&open=1` // кровавый +-1 уровень
 
   // frames[2].document.location.href = `https://avalon.endlesswar.ru/map.php?cmd=hell`;
 

@@ -22,7 +22,9 @@ const healUses = {
 };
 
 const healRunes = [
+  'https://img.endlesswar.ru/i/rune/19.gif', // 100 x 5
   'https://img.endlesswar.ru/i/rune/8.gif', // 250 x 2
+  'https://img.endlesswar.ru/i/rune/43.gif', // 250 x 4
   'https://img.endlesswar.ru/i/rune/9.gif', // 500 x 1
   'https://img.endlesswar.ru/i/rune/78.gif', // 250 x 5
   'https://img.endlesswar.ru/i/rune/23.gif' // 500 x 3

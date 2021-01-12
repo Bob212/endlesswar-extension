@@ -5,17 +5,21 @@ export const goldDigger = () => {
 
   console.log('Digging gold')
 
-  if (cleanDelay > 3) {
-    cleanDelay = 0;
+  fetch(`https://avalon.endlesswar.ru/radio.php?cmd=setradiodj&id=999`, {
+    method: 'GET'
+  });
 
-    cleanMail()
-  } else {
-    cleanDelay++;
+  // if (cleanDelay > 3) {
+  //   cleanDelay = 0;
 
-    fetch(`https://avalon.endlesswar.ru/radio.php?cmd=setradiodj&id=1`, {
-      method: 'GET'
-    });
-  }
+  //   cleanMail()
+  // } else {
+  //   cleanDelay++;
+
+  //   fetch(`https://avalon.endlesswar.ru/radio.php?cmd=setradiodj&id=3`, {
+  //     method: 'GET'
+  //   });
+  // }
 };
 
 let cleanStep = 0;
